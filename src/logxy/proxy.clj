@@ -46,6 +46,24 @@
                   :force-redirects true
                   :throw-exceptions? false}))
 
+(defmethod proxy-request :put
+  [uri request]
+  (http/put uri {:headers (:header request)
+                 :body (:body request)
+                 :as :stream
+                 :decompress-body false
+                 :force-redirects true
+                 :throw-exceptions? false}))
+
+(defmethod proxy-request :delete
+  [uri request]
+  (http/delete uri {:headers (:header request)
+                    :body (:body request)
+                    :as :stream
+                    :decompress-body false
+                    :force-redirects true
+                    :throw-exceptions? false}))
+
 (def proxy
   (interceptor
    {:name ::not-found-interceptor
