@@ -23,11 +23,8 @@
 
 (defn input-stream->byte-array
   [stream]
-  ;; read bytes from the stream and into a byte array returning the array
   (with-open [os (java.io.ByteArrayOutputStream.)]
-    (println "Begin copy")
     (io/copy stream os)
-    (println "Begin bytes")
     (.toByteArray os)))
 
 (defmulti proxy-request
@@ -54,7 +51,11 @@
    {:name ::not-found-interceptor
     :enter (fn [{:keys [request] :as context}]
              (let [uri (build-request-uri request)
-                   response (proxy-request uri request)]
+                   response (-> (proxy-request uri request)
+                                (update-in [:body] input-stream->byte-array))
+                   ;; this stream fuckery creates a "copy" so that the
+                   ;; original stream doesn't get consumed
+                   request (update-in request [:body] input-stream->byte-array)]
                (log logger [uri
                             (-> request
                                 (dissoc :servlet-request
@@ -64,6 +65,9 @@
                                         :servlet-context
                                         :servlet-path
                                         :servlet))
-                            (update-in response [:body] input-stream->byte-array)])
-               (-> (assoc context :response response)
+                            response])
+               (-> (assoc context :request request)
+                   (assoc :response response)
+                   (update-in [:request :body] io/input-stream) ;; make the copied bytes into streams again
+                   (update-in [:response :body] io/input-stream)
                    terminate)))}))
