@@ -1,4 +1,4 @@
-# boxxy-proxy
+# logxy
 
 FIXME
 
@@ -6,9 +6,9 @@ FIXME
 
 1. Start the application: `lein run-dev` \*
 2. Go to [localhost:8080](http://localhost:8080/) to see: `Hello World!`
-3. Read your app's source code at src/boxxy_proxy/service.clj. Explore the docs of functions
+3. Read your app's source code at src/logxy/service.clj. Explore the docs of functions
    that define routes and responses.
-4. Run your app's tests with `lein test`. Read the tests at test/boxxy_proxy/service_test.clj.
+4. Run your app's tests with `lein test`. Read the tests at test/logxy/service_test.clj.
 5. Learn more! See the [Links section below](#links).
 
 \* `lein run-dev` automatically detects code changes. Alternatively, you can run in production mode

@@ -1,5 +1,6 @@
 (ns logxy.log.protocols)
 
 (defprotocol Logger
-  (log-request [logger request])
-  (log-response [logger response]))
+  ;; msg is [request response]
+  ;; I should probably make a type for that...
+  (log [logger msg]))
