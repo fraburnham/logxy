@@ -1,16 +1,20 @@
 (ns logxy.log.impl.stdout
   "Smiple implementation of logging via stdout"
   (:require [logxy.log.protocols :refer [Logger]]
-            [clojure.pprint :refer [pprint]])
+            [clojure.pprint :refer [pprint]]
+            [clojure.core.async :as a])
   (:gen-class))
 
-;; should be using clojure logging
+(defn worker
+  [ch]
+  (a/go
+    (while true
+      (let [[request response] (a/<! ch)]
+        (pprint request)
+        (pprint response)))))
 
-(deftype STDOUTLogger []
+(deftype STDOUTLogger [ch]
   Logger
-  (log-request
-    [_ request]
-    (pprint request))
-  (log-response
-    [_ response]
-    (pprint response)))
+  (log
+    [_ msg]
+    (a/>!! ch)))
